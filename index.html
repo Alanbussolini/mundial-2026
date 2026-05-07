@@ -53,6 +53,7 @@
     
     <div class="container">
         <button class="btn" onclick="openModal()">+Tengo Figuritas</button>
+        <button class="btn" style="background:#0984e3" onclick="loadStickersFromSupabase();alert('Datos actualizados')">🔄 Actualizar</button>
         
         <div class="search-box">
             <input type="text" id="searchTeam" placeholder="Buscar equipo..." onkeyup="filterTeams()">
@@ -175,8 +176,8 @@
         let allCodes = [];
         let stickersCache = [];
 
-        function init() {
-            loadStickersFromSupabase();
+        async function init() {
+            await loadStickersFromSupabase();
             
             Object.keys(teamsData).forEach(key => {
                 const team = teamsData[key];
@@ -303,11 +304,15 @@
                 const response = await fetch(`${config.url}/rest/v1/figuritas?select=*`, {
                     headers: {
                         'apikey': config.key,
-                        'Authorization': `Bearer ${config.key}`
+                        'Authorization': `Bearer ${config.key}`,
+                        'Content-Type': 'application/json'
                     }
                 });
                 if (response.ok) {
                     stickersCache = await response.json();
+                    console.log('Cargadas:', stickersCache.length);
+                } else {
+                    console.error('Error loading:', response.status);
                 }
             } catch (e) {
                 console.error('Error loading stickers:', e);
