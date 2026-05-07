@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Figus Copa Mundial 2026</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { background: #f5f5f5; min-height: 100vh; }
+        header { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 20px; text-align: center; color: white; position: sticky; top: 0; z-index: 100; }
+        header h1 { font-size: 1.5rem; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .btn { background: #00b894; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1rem; cursor: pointer; width: 100%; margin-bottom: 20px; }
+        .btn:hover { background: #00a884; }
+        .btn-back { background: #636e72; margin-bottom: 10px; }
+        .search-box { margin-bottom: 15px; }
+        .search-box input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        .teams-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .team-card { background: white; padding: 15px 10px; border-radius: 10px; text-align: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.08); transition: transform 0.2s; }
+        .team-card:hover { transform: scale(1.03); }
+        .team-card h3 { color: #2d3436; font-size: 0.9rem; }
+        .flag { font-size: 2rem; }
+        .players-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .player-card { background: white; padding: 12px 8px; border-radius: 8px; text-align: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.08); font-size: 0.9rem; }
+        .player-card:hover { background: #dfe6e9; }
+        .sticker-list { display: flex; flex-direction: column; gap: 10px; }
+        .sticker-item { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+        .sticker-item strong { color: #2d3436; }
+        .sticker-item small { color: #636e72; display: block; }
+        .empty { text-align: center; color: #636e72; padding: 20px; }
+        .section-title { margin: 20px 0 15px; color: #2d3436; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 200; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 95%; max-width: 450px; max-height: 85vh; overflow-y: auto; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #2d3436; font-weight: bold; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
+        .checkboxes { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; max-height: 250px; overflow-y: auto; padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
+        .checkboxes label { display: flex; align-items: center; gap: 3px; font-size: 0.75rem; }
+        .checkboxes input { width: auto; }
+        .btn-submit { background: #00b894; margin-top: 10px; }
+        .btn-close { background: #636e72; margin-top: 10px; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 15px; }
+        .tab { background: #dfe6e9; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; flex: 1; }
+        .tab.active { background: #00b894; color: white; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>⚽ Figus Mundial 2026</h1>
+        <p style="margin-top: 8px; opacity: 0.8; font-size: 0.85rem;">Intercambiá figuritas con fans de todo el país</p>
+    </header>
+    
+    <div class="container">
+        <button class="btn" onclick="openModal()">+Tengo Figuritas</button>
+        
+        <div class="search-box">
+            <input type="text" id="searchTeam" placeholder="Buscar equipo..." onkeyup="filterTeams()">
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('all')" id="tabAll">Todos</button>
+            <button class="tab" onclick="showTab('americas')" id="tabAmericas">América</button>
+            <button class="tab" onclick="showTab('europe')" id="tabEurope">Europa</button>
+            <button class="tab" onclick="showTab('asia')" id="tabAsia">Asia</button>
+            <button class="tab" onclick="showTab('africa')" id="tabAfrica">África</button>
+        </div>
+        
+        <h2 class="section-title">Equipos</h2>
+        <div id="teamsGrid" class="teams-grid"></div>
+    </div>
+
+    <div id="teamView" class="container" style="display: none;">
+        <button class="btn btn-back" onclick="goBack()">← Volver</button>
+        <h2 id="teamTitle" class="section-title"></h2>
+        <div id="playersGrid" class="players-list"></div>
+    </div>
+
+    <div id="stickerView" class="container" style="display: none;">
+        <button class="btn btn-back" onclick="goBack()">← Volver</button>
+        <h2 id="stickerTitle" class="section-title"></h2>
+        <div class="search-box" style="margin-bottom: 15px;">
+            <input type="text" id="searchNeighborhood" placeholder="Buscar por barrio..." onkeyup="filterStickers()">
+        </div>
+        <p style="color: #636e72; margin-bottom: 15px;">Figuritas disponibles:</p>
+        <div id="stickerList" class="sticker-list"></div>
+    </div>
+
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 15px;">Subir Figuritas</h2>
+            <div class="form-group">
+                <label>Tu nombre</label>
+                <input type="text" id="userName" placeholder="Juan Pérez">
+            </div>
+            <div class="form-group">
+                <label>WhatsApp</label>
+                <input type="tel" id="userPhone" placeholder="11 1234 5678">
+            </div>
+            <div class="form-group">
+                <label>Barrio</label>
+                <input type="text" id="userNeighborhood" placeholder="Villa Urquiza">
+            </div>
+            <div class="form-group">
+                <label>Seleccioná las figuritas que tenés:</label>
+                <div class="checkboxes" id="checkboxesContainer"></div>
+            </div>
+            <button class="btn btn-submit" onclick="saveStickers()">Guardar Figuritas</button>
+            <button class="btn btn-close" onclick="closeModal()">Cancelar</button>
+        </div>
+    </div>
+
+    <script>
+        const teamsData = {
+            especiales: { name: 'Especiales', code: 'FWC', flag: '🏆', count: 20, region: 'special' },
+            argentina: { name: 'Argentina', code: 'ARG', flag: '🇦🇷', count: 20, region: 'americas' },
+            brasil: { name: 'Brasil', code: 'BRA', flag: '🇧🇷', count: 20, region: 'americas' },
+            uruguay: { name: 'Uruguay', code: 'URU', flag: '🇺🇾', count: 20, region: 'americas' },
+            colombia: { name: 'Colombia', code: 'COL', flag: '🇨🇴', count: 20, region: 'americas' },
+            ecuador: { name: 'Ecuador', code: 'ECU', flag: '🇪🇨', count: 20, region: 'americas' },
+            peru: { name: 'Perú', code: 'PER', flag: '🇵🇪', count: 20, region: 'americas' },
+            mexico: { name: 'México', code: 'MEX', flag: '🇲🇽', count: 20, region: 'americas' },
+            usa: { name: 'Estados Unidos', code: 'USA', flag: '🇺🇸', count: 20, region: 'americas' },
+            canada: { name: 'Canadá', code: 'CAN', flag: '🇨🇦', count: 20, region: 'americas' },
+            costarica: { name: 'Costa Rica', code: 'CRC', flag: '🇨🇷', count: 20, region: 'americas' },
+            panama: { name: 'Panamá', code: 'PAN', flag: '🇵🇦', count: 20, region: 'americas' },
+            jamaica: { name: 'Jamaica', code: 'JAM', flag: '🇯🇲', count: 20, region: 'americas' },
+            venezuela: { name: 'Venezuela', code: 'VEN', flag: '🇻🇪', count: 20, region: 'americas' },
+            francia: { name: 'Francia', code: 'FRA', flag: '🇫🇷', count: 20, region: 'europe' },
+            inglaterra: { name: 'Inglaterra', code: 'ENG', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', count: 20, region: 'europe' },
+            espana: { name: 'España', code: 'ESP', flag: '🇪🇸', count: 20, region: 'europe' },
+            alemania: { name: 'Alemania', code: 'GER', flag: '🇩🇪', count: 20, region: 'europe' },
+            portugal: { name: 'Portugal', code: 'POR', flag: '🇵🇹', count: 20, region: 'europe' },
+            paisesbajos: { name: 'Países Bajos', code: 'NED', flag: '🇳🇱', count: 20, region: 'europe' },
+            belgica: { name: 'Bélgica', code: 'BEL', flag: '🇧🇪', count: 20, region: 'europe' },
+            croacia: { name: 'Croacia', code: 'CRO', flag: '🇭🇷', count: 20, region: 'europe' },
+            suiza: { name: 'Suiza', code: 'SUI', flag: '🇨🇭', count: 20, region: 'europe' },
+            dinamarca: { name: 'Dinamarca', code: 'DEN', flag: '🇩🇰', count: 20, region: 'europe' },
+            сербия: { name: 'Serbia', code: 'SRB', code2: 'SRB', flag: '🇷🇸', count: 20, region: 'europe' },
+            polonia: { name: 'Polonia', code: 'POL', flag: '🇵🇱', count: 20, region: 'europe' },
+            escocia: { name: 'Escocia', code: 'SCO', flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', count: 20, region: 'europe' },
+            austria: { name: 'Austria', code: 'AUT', flag: '🇦🇹', count: 20, region: 'europe' },
+            hungria: { name: 'Hungría', code: 'HUN', flag: '🇭🇺', count: 20, region: 'europe' },
+            gales: { name: 'Gales', code: 'WAL', flag: '🏴󠁧󠁢󠁷󠁬󠁳󠁿', count: 20, region: 'europe' },
+            ukrainia: { name: 'Ucran', code: 'UKR', code2: 'UKR', flag: '🇺🇦', count: 20, region: 'europe' },
+            turquia: { name: 'Turquía', code: 'TUR', flag: '🇹🇷', count: 20, region: 'europe' },
+            japon: { name: 'Japón', code: 'JPN', flag: '🇯🇵', count: 20, region: 'asia' },
+            coreadelsur: { name: 'Corea del Sur', code: 'KOR', flag: '🇰🇷', count: 20, region: 'asia' },
+            iran: { name: 'Irán', code: 'IRN', flag: '🇮🇷', count: 20, region: 'asia' },
+            arabiasaudi: { name: 'Arabia Saudita', code: 'KSA', flag: '🇸🇦', count: 20, region: 'asia' },
+            australia: { name: 'Australia', code: 'AUS', flag: '🇦🇺', count: 20, region: 'asia' },
+            qatar: { name: 'Qatar', code: 'QAT', flag: '🇶🇦', count: 20, region: 'asia' },
+            filipinas: { name: 'Filipinas', code: 'PHI', flag: '🇵🇭', count: 20, region: 'asia' },
+            nuevazelanda: { name: 'Nueva Zelanda', code: 'NZL', flag: '🇳🇿', count: 20, region: 'asia' },
+            marruecos: { name: 'Marruecos', code: 'MAR', flag: '🇲🇦', count: 20, region: 'africa' },
+            senegal: { name: 'Senegal', code: 'SEN', flag: '🇸🇳', count: 20, region: 'africa' },
+            argelia: { name: 'Argelia', code: 'ALG', flag: '🇩🇿', count: 20, region: 'africa' },
+            tunes: { name: 'Túnez', code: 'TUN', flag: '🇹🇳', count: 20, region: 'africa' },
+            egipto: { name: 'Egipto', code: 'EGY', flag: '🇪🇬', count: 20, region: 'africa' },
+            nigeria: { name: 'Nigeria', code: 'NGA', flag: '🇳🇬', count: 20, region: 'africa' },
+            camerun: { name: 'Camerún', code: 'CMR', flag: '����🇲', count: 20, region: 'africa' },
+            costamarfil: { name: 'Costa de Marfil', code: 'CIV', flag: '🇨🇮', count: 20, region: 'africa' },
+            mali: { name: 'Mali', code: 'MLI', flag: '🇲🇱', count: 20, region: 'africa' },
+            sudafrica: { name: 'Sudáfrica', code: 'RSA', flag: '🇿🇦', count: 20, region: 'africa' }
+        };
+
+        const SUPABASE_URL = 'https://dxvvusrhmaiysuooxijm.supabase.co';
+        const SUPABASE_KEY = 'sb_secret_oQEaPBHZh0uja_tq0R4ZcA_6PjqUJOo';
+
+        let currentView = 'home';
+        let currentTab = 'all';
+        let currentCode = '';
+        let allCodes = [];
+        let stickersCache = [];
+
+        function init() {
+            loadStickersFromSupabase();
+            
+            const specialCodes = [];
+            const codesByRegion = { americas: [], europe: [], asia: [], africa: [] };
+            
+            Object.keys(teamsData).forEach(key => {
+                const team = teamsData[key];
+                for (let i = 1; i <= team.count; i++) {
+                    const code = team.code + '-' + i;
+                    allCodes.push(code);
+                    if (key === 'especiales') {
+                        specialCodes.push(code);
+                    } else {
+                        codesByRegion[team.region].push(code);
+                    }
+                }
+            });
+            
+            const cbContainer = document.getElementById('checkboxesContainer');
+            cbContainer.innerHTML = allCodes.map(code => 
+                `<label><input type="checkbox" value="${code}">${code}</label>`
+            ).join('');
+            
+            renderTeams();
+        }
+
+        function renderTeams() {
+            const grid = document.getElementById('teamsGrid');
+            grid.innerHTML = '';
+            
+            Object.keys(teamsData).forEach(key => {
+                const team = teamsData[key];
+                if (currentTab !== 'all' && team.region !== currentTab && team.region !== 'special') return;
+                
+                const searchTerm = document.getElementById('searchTeam').value.toLowerCase();
+                if (searchTerm && !team.name.toLowerCase().includes(searchTerm)) return;
+                
+                const card = document.createElement('div');
+                card.className = 'team-card';
+                card.setAttribute('data-team', key);
+                card.innerHTML = `<div class="flag">${team.flag}</div><h3>${team.name}</h3>`;
+                card.onclick = () => showTeam(key);
+                grid.appendChild(card);
+            });
+        }
+
+        function filterTeams() {
+            renderTeams();
+        }
+
+        function showTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+            renderTeams();
+        }
+
+        function showTeam(teamKey) {
+            currentView = 'team';
+            const team = teamsData[teamKey];
+            document.getElementById('teamTitle').textContent = team.flag + ' ' + team.name;
+            document.getElementById('teamTitle').setAttribute('data-team', teamKey);
+            
+            const grid = document.getElementById('playersGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 1; i <= team.count; i++) {
+                const code = team.code + '-' + i;
+                const card = document.createElement('div');
+                card.className = 'player-card';
+                card.textContent = code;
+                card.onclick = () => showStickers(code, team.name);
+                grid.appendChild(card);
+            }
+            
+            document.querySelector('.container').style.display = 'none';
+            document.getElementById('teamView').style.display = 'block';
+            document.getElementById('stickerView').style.display = 'none';
+        }
+
+        function showStickers(code, teamName) {
+            currentView = 'sticker';
+            currentCode = code;
+            document.getElementById('stickerTitle').textContent = code + ' - ' + teamName;
+            document.getElementById('searchNeighborhood').value = '';
+            renderStickers(code);
+            
+            document.getElementById('teamView').style.display = 'none';
+            document.getElementById('stickerView').style.display = 'block';
+        }
+
+        function renderStickers(code) {
+            const searchTerm = document.getElementById('searchNeighborhood').value.toLowerCase();
+            
+            const stickers = getStickers();
+            let available = stickers.filter(s => s.code === code);
+            
+            if (searchTerm) {
+                available = available.filter(s => s.neighborhood.toLowerCase().includes(searchTerm));
+            }
+            
+            const list = document.getElementById('stickerList');
+            
+            if (available.length === 0) {
+                list.innerHTML = '<div class="empty">Nadie tiene esta figurita todavía</div>';
+            } else {
+                list.innerHTML = available.map(s => `
+                    <div class="sticker-item">
+                        <strong>${s.user_name}</strong>
+                        <small>📍 ${s.neighborhood}</small>
+                        <small>📱 ${s.phone}</small>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function filterStickers() {
+            renderStickers(currentCode);
+        }
+
+        function goBack() {
+            currentView = 'home';
+            document.querySelector('.container').style.display = 'block';
+            document.getElementById('teamView').style.display = 'none';
+            document.getElementById('stickerView').style.display = 'none';
+        }
+
+        function getStickers() {
+            return stickersCache;
+        }
+
+        async function loadStickersFromSupabase() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/figuritas?select=*`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                if (response.ok) {
+                    stickersCache = await response.json();
+                }
+            } catch (e) {
+                console.error('Error loading stickers:', e);
+                stickersCache = [];
+            }
+        }
+
+        async function saveStickersToStorage(stickers) {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/figuritas`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(stickers)
+                });
+                if (response.ok) {
+                    await loadStickersFromSupabase();
+                }
+            } catch (e) {
+                console.error('Error saving stickers:', e);
+            }
+        }
+
+        async function deleteUserStickers(userName) {
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/figuritas?user_name=eq.${encodeURIComponent(userName)}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+            } catch (e) {
+                console.error('Error deleting stickers:', e);
+            }
+        }
+
+        function openModal() {
+            document.getElementById('addModal').classList.add('active');
+            loadUserData();
+        }
+
+        function closeModal() {
+            document.getElementById('addModal').classList.remove('active');
+        }
+
+        function loadUserData() {
+            const userData = JSON.parse(localStorage.getItem('figusUser') || '{}');
+            if (userData.name) document.getElementById('userName').value = userData.name;
+            if (userData.phone) document.getElementById('userPhone').value = userData.phone;
+            if (userData.neighborhood) document.getElementById('userNeighborhood').value = userData.neighborhood;
+        }
+
+        async function saveStickers() {
+            const userName = document.getElementById('userName').value.trim();
+            const userPhone = document.getElementById('userPhone').value.trim();
+            const userNeighborhood = document.getElementById('userNeighborhood').value.trim();
+            
+            if (!userName || !userPhone || !userNeighborhood) {
+                alert('Completá todos tus datos');
+                return;
+            }
+            
+            const checkboxes = document.querySelectorAll('#checkboxesContainer input:checked');
+            const codes = Array.from(checkboxes).map(cb => cb.value);
+            
+            if (codes.length === 0) {
+                alert('Seleccioná al menos una figurita');
+                return;
+            }
+            
+            localStorage.setItem('figusUser', JSON.stringify({
+                name: userName,
+                phone: userPhone,
+                neighborhood: userNeighborhood
+            }));
+            
+            await deleteUserStickers(userName);
+            
+            const newStickers = codes.map(code => ({
+                code: code,
+                user_name: userName,
+                phone: userPhone,
+                neighborhood: userNeighborhood
+            }));
+            
+            await saveStickersToStorage(newStickers);
+            closeModal();
+            alert('Figuritas guardadas!');
+        }
+
+        init();
+    </script>
+</body>
+</html>
