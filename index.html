@@ -302,6 +302,7 @@
         async function loadStickersFromSupabase() {
             try {
                 const response = await fetch(`${config.url}/rest/v1/figuritas?select=*`, {
+                    credentials: 'omit',
                     headers: {
                         'apikey': config.key,
                         'Authorization': `Bearer ${config.key}`,
@@ -325,6 +326,7 @@
             try {
                 const response = await fetch(`${config.url}/rest/v1/figuritas`, {
                     method: 'POST',
+                    credentials: 'omit',
                     headers: {
                         'apikey': config.key,
                         'Authorization': `Bearer ${config.key}`,
@@ -349,6 +351,7 @@
             try {
                 await fetch(`${config.url}/rest/v1/figuritas?user_name=eq.${encodeURIComponent(userName)}`, {
                     method: 'DELETE',
+                    credentials: 'omit',
                     headers: {
                         'apikey': config.key,
                         'Authorization': `Bearer ${config.key}`
