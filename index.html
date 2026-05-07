@@ -47,8 +47,8 @@
 </head>
 <body>
     <header>
-        <h1>⚽ Figus Mundial 2026</h1>
-        <p style="margin-top: 8px; opacity: 0.8; font-size: 0.85rem;">Intercambiá figuritas con fans de todo el país</p>
+        <h1>Figus Mundial 2026</h1>
+        <p style="margin-top: 8px; opacity: 0.8; font-size: 0.85rem;">Intercambia figuritas con fans de todo el pais</p>
     </header>
     
     <div class="container">
@@ -60,10 +60,10 @@
         
         <div class="tabs">
             <button class="tab active" onclick="showTab('all')" id="tabAll">Todos</button>
-            <button class="tab" onclick="showTab('americas')" id="tabAmericas">América</button>
+            <button class="tab" onclick="showTab('americas')" id="tabAmericas">America</button>
             <button class="tab" onclick="showTab('europe')" id="tabEurope">Europa</button>
             <button class="tab" onclick="showTab('asia')" id="tabAsia">Asia</button>
-            <button class="tab" onclick="showTab('africa')" id="tabAfrica">África</button>
+            <button class="tab" onclick="showTab('africa')" id="tabAfrica">Africa</button>
         </div>
         
         <h2 class="section-title">Equipos</h2>
@@ -71,13 +71,13 @@
     </div>
 
     <div id="teamView" class="container" style="display: none;">
-        <button class="btn btn-back" onclick="goBack()">← Volver</button>
+        <button class="btn btn-back" onclick="goBack()"><- Volver</button>
         <h2 id="teamTitle" class="section-title"></h2>
         <div id="playersGrid" class="players-list"></div>
     </div>
 
     <div id="stickerView" class="container" style="display: none;">
-        <button class="btn btn-back" onclick="goBack()">← Volver</button>
+        <button class="btn btn-back" onclick="goBack()"><- Volver</button>
         <h2 id="stickerTitle" class="section-title"></h2>
         <div class="search-box" style="margin-bottom: 15px;">
             <input type="text" id="searchNeighborhood" placeholder="Buscar por barrio..." onkeyup="filterStickers()">
@@ -91,7 +91,7 @@
             <h2 style="margin-bottom: 15px;">Subir Figuritas</h2>
             <div class="form-group">
                 <label>Tu nombre</label>
-                <input type="text" id="userName" placeholder="Juan Pérez">
+                <input type="text" id="userName" placeholder="Juan Perez">
             </div>
             <div class="form-group">
                 <label>WhatsApp</label>
@@ -102,7 +102,7 @@
                 <input type="text" id="userNeighborhood" placeholder="Villa Urquiza">
             </div>
             <div class="form-group">
-                <label>Seleccioná las figuritas que tenés:</label>
+                <label>Selecciona las figuritas que tienes:</label>
                 <div class="checkboxes" id="checkboxesContainer"></div>
             </div>
             <button class="btn btn-submit" onclick="saveStickers()">Guardar Figuritas</button>
@@ -110,9 +110,64 @@
         </div>
     </div>
 
-<script>
-        const SUPABASE_URL = '{{SUPABASE_URL}}';
-        const SUPABASE_KEY = '{{SUPABASEKEY}}';
+    <script>
+        const config = {
+            url: 'https://dxvvusrhmaiysuooxijm.supabase.co',
+            key: 'sb_secret_oQEaPBHZh0uja_tq0R4ZcA_6PjqUJOo'
+        };
+
+        const teamsData = {
+            especiales: { name: 'Especiales', code: 'FWC', flag: '🏆', count: 20, region: 'special' },
+            argentina: { name: 'Argentina', code: 'ARG', flag: '🇦🇷', count: 20, region: 'americas' },
+            brasil: { name: 'Brasil', code: 'BRA', flag: '🇧🇷', count: 20, region: 'americas' },
+            uruguay: { name: 'Uruguay', code: 'URU', flag: '🇺🇾', count: 20, region: 'americas' },
+            colombia: { name: 'Colombia', code: 'COL', flag: '🇨🇴', count: 20, region: 'americas' },
+            ecuador: { name: 'Ecuador', code: 'ECU', flag: '🇪🇨', count: 20, region: 'americas' },
+            peru: { name: 'Peru', code: 'PER', flag: '🇵🇪', count: 20, region: 'americas' },
+            mexico: { name: 'Mexico', code: 'MEX', flag: '🇲🇽', count: 20, region: 'americas' },
+            usa: { name: 'Estados Unidos', code: 'USA', flag: '🇺🇸', count: 20, region: 'americas' },
+            canada: { name: 'Canada', code: 'CAN', flag: '🇨🇦', count: 20, region: 'americas' },
+            costarica: { name: 'Costa Rica', code: 'CRC', flag: '🇨🇷', count: 20, region: 'americas' },
+            panama: { name: 'Panama', code: 'PAN', flag: '🇵🇦', count: 20, region: 'americas' },
+            jamaica: { name: 'Jamaica', code: 'JAM', flag: '🇯🇲', count: 20, region: 'americas' },
+            venezuela: { name: 'Venezuela', code: 'VEN', flag: '🇻🇪', count: 20, region: 'americas' },
+            francia: { name: 'Francia', code: 'FRA', flag: '🇫🇷', count: 20, region: 'europe' },
+            inglaterra: { name: 'Inglaterra', code: 'ENG', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', count: 20, region: 'europe' },
+            espana: { name: 'Espana', code: 'ESP', flag: '🇪🇸', count: 20, region: 'europe' },
+            alemania: { name: 'Alemania', code: 'GER', flag: '🇩🇪', count: 20, region: 'europe' },
+            portugal: { name: 'Portugal', code: 'POR', flag: '🇵🇹', count: 20, region: 'europe' },
+            paisesbajos: { name: 'Paises Bajos', code: 'NED', flag: '🇳🇱', count: 20, region: 'europe' },
+            belgica: { name: 'Belgica', code: 'BEL', flag: '🇧🇪', count: 20, region: 'europe' },
+            croacia: { name: 'Croacia', code: 'CRO', flag: '🇭🇷', count: 20, region: 'europe' },
+            suiza: { name: 'Suiza', code: 'SUI', flag: '🇨🇭', count: 20, region: 'europe' },
+            dinamarca: { name: 'Dinamarca', code: 'DEN', flag: '🇩🇰', count: 20, region: 'europe' },
+            Serbia: { name: 'Serbia', code: 'SRB', flag: '🇷🇸', count: 20, region: 'europe' },
+            polonia: { name: 'Polonia', code: 'POL', flag: '🇵🇱', count: 20, region: 'europe' },
+            escocia: { name: 'Escocia', code: 'SCO', flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', count: 20, region: 'europe' },
+            austria: { name: 'Austria', code: 'AUT', flag: '🇦🇹', count: 20, region: 'europe' },
+            hungria: { name: 'Hungria', code: 'HUN', flag: '🇭🇺', count: 20, region: 'europe' },
+            gales: { name: 'Gales', code: 'WAL', flag: '🏴󠁧󠁢󠁷󠁬󠁳󠁿', count: 20, region: 'europe' },
+            Ucran: { name: 'Ucran', code: 'UKR', flag: '🇺🇦', count: 20, region: 'europe' },
+            Turqu: { name: 'Turquia', code: 'TUR', flag: '🇹🇷', count: 20, region: 'europe' },
+            japon: { name: 'Japon', code: 'JPN', flag: '🇯🇵', count: 20, region: 'asia' },
+            coreadelsur: { name: 'Corea del Sur', code: 'KOR', flag: '🇰🇷', count: 20, region: 'asia' },
+            iran: { name: 'Iran', code: 'IRN', flag: '🇮🇷', count: 20, region: 'asia' },
+            arabiasaudi: { name: 'Arabia Saudita', code: 'KSA', flag: '🇸🇦', count: 20, region: 'asia' },
+            australia: { name: 'Australia', code: 'AUS', flag: '🇦🇺', count: 20, region: 'asia' },
+            qatar: { name: 'Qatar', code: 'QAT', flag: '🇶🇦', count: 20, region: 'asia' },
+           菲律宾: { name: 'Filipinas', code: 'PHI', flag: '🇵🇭', count: 20, region: 'asia' },
+            nuevazelanda: { name: 'Nueva Zelanda', code: 'NZL', flag: '🇳🇿', count: 20, region: 'asia' },
+            marruecos: { name: 'Marruecos', code: 'MAR', flag: '🇲🇦', count: 20, region: 'africa' },
+            senegal: { name: 'Senegal', code: 'SEN', flag: '🇸🇳', count: 20, region: 'africa' },
+            argelia: { name: 'Argelia', code: 'ALG', flag: '🇩🇿', count: 20, region: 'africa' },
+            tunes: { name: 'Tunez', code: 'TUN', flag: '🇹🇳', count: 20, region: 'africa' },
+            egipto: { name: 'Egipto', code: 'EGY', flag: '🇪🇬', count: 20, region: 'africa' },
+            nigeria: { name: 'Nigeria', code: 'NGA', flag: '🇳🇬', count: 20, region: 'africa' },
+            camerun: { name: 'Camerun', code: 'CMR', flag: '🇨🇲', count: 20, region: 'africa' },
+            costamarfil: { name: 'Costa de Marfil', code: 'CIV', flag: '🇨🇮', count: 20, region: 'africa' },
+            mali: { name: 'Mali', code: 'MLI', flag: '🇲🇱', count: 20, region: 'africa' },
+            sudafrica: { name: 'Sudafrica', code: 'RSA', flag: '🇿🇦', count: 20, region: 'africa' }
+        };
 
         let currentView = 'home';
         let currentTab = 'all';
@@ -123,19 +178,11 @@
         function init() {
             loadStickersFromSupabase();
             
-            const specialCodes = [];
-            const codesByRegion = { americas: [], europe: [], asia: [], africa: [] };
-            
             Object.keys(teamsData).forEach(key => {
                 const team = teamsData[key];
                 for (let i = 1; i <= team.count; i++) {
                     const code = team.code + '-' + i;
                     allCodes.push(code);
-                    if (key === 'especiales') {
-                        specialCodes.push(code);
-                    } else {
-                        codesByRegion[team.region].push(code);
-                    }
                 }
             });
             
@@ -215,8 +262,7 @@
         function renderStickers(code) {
             const searchTerm = document.getElementById('searchNeighborhood').value.toLowerCase();
             
-            const stickers = getStickers();
-            let available = stickers.filter(s => s.code === code);
+            let available = stickersCache.filter(s => s.code === code);
             
             if (searchTerm) {
                 available = available.filter(s => s.neighborhood.toLowerCase().includes(searchTerm));
@@ -225,7 +271,7 @@
             const list = document.getElementById('stickerList');
             
             if (available.length === 0) {
-                list.innerHTML = '<div class="empty">Nadie tiene esta figurita todavía</div>';
+                list.innerHTML = '<div class="empty">Nadie tiene esta figurita todavia</div>';
             } else {
                 list.innerHTML = available.map(s => `
                     <div class="sticker-item">
@@ -254,10 +300,10 @@
 
         async function loadStickersFromSupabase() {
             try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/figuritas?select=*`, {
+                const response = await fetch(`${config.url}/rest/v1/figuritas?select=*`, {
                     headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                        'apikey': config.key,
+                        'Authorization': `Bearer ${config.key}`
                     }
                 });
                 if (response.ok) {
@@ -271,11 +317,11 @@
 
         async function saveStickersToStorage(stickers) {
             try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/figuritas`, {
+                const response = await fetch(`${config.url}/rest/v1/figuritas`, {
                     method: 'POST',
                     headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'apikey': config.key,
+                        'Authorization': `Bearer ${config.key}`,
                         'Content-Type': 'application/json',
                         'Prefer': 'return=minimal'
                     },
@@ -291,11 +337,11 @@
 
         async function deleteUserStickers(userName) {
             try {
-                await fetch(`${SUPABASE_URL}/rest/v1/figuritas?user_name=eq.${encodeURIComponent(userName)}`, {
+                await fetch(`${config.url}/rest/v1/figuritas?user_name=eq.${encodeURIComponent(userName)}`, {
                     method: 'DELETE',
                     headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                        'apikey': config.key,
+                        'Authorization': `Bearer ${config.key}`
                     }
                 });
             } catch (e) {
@@ -325,7 +371,7 @@
             const userNeighborhood = document.getElementById('userNeighborhood').value.trim();
             
             if (!userName || !userPhone || !userNeighborhood) {
-                alert('Completá todos tus datos');
+                alert('Completa todos tus datos');
                 return;
             }
             
@@ -333,7 +379,7 @@
             const codes = Array.from(checkboxes).map(cb => cb.value);
             
             if (codes.length === 0) {
-                alert('Seleccioná al menos una figurita');
+                alert('Selecciona al menos una figurita');
                 return;
             }
             
