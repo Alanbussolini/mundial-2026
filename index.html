@@ -321,6 +321,7 @@
         }
 
         async function saveStickersToStorage(stickers) {
+            console.log('Guardando:', stickers);
             try {
                 const response = await fetch(`${config.url}/rest/v1/figuritas`, {
                     method: 'POST',
@@ -332,11 +333,15 @@
                     },
                     body: JSON.stringify(stickers)
                 });
+                console.log('Response:', response.status, response.statusText);
                 if (response.ok) {
                     await loadStickersFromSupabase();
+                    return true;
                 }
+                return false;
             } catch (e) {
                 console.error('Error saving stickers:', e);
+                return false;
             }
         }
 
@@ -403,9 +408,13 @@
                 neighborhood: userNeighborhood
             }));
             
-            await saveStickersToStorage(newStickers);
+            const saved = await saveStickersToStorage(newStickers);
             closeModal();
-            alert('Figuritas guardadas!');
+            if (saved) {
+                alert('Figuritas guardadas!');
+            } else {
+                alert('Error al guardar. Revisa la consola (F12)');
+            }
         }
 
         init();
