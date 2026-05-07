@@ -110,62 +110,9 @@
         </div>
     </div>
 
-    <script>
-        const teamsData = {
-            especiales: { name: 'Especiales', code: 'FWC', flag: '🏆', count: 20, region: 'special' },
-            argentina: { name: 'Argentina', code: 'ARG', flag: '🇦🇷', count: 20, region: 'americas' },
-            brasil: { name: 'Brasil', code: 'BRA', flag: '🇧🇷', count: 20, region: 'americas' },
-            uruguay: { name: 'Uruguay', code: 'URU', flag: '🇺🇾', count: 20, region: 'americas' },
-            colombia: { name: 'Colombia', code: 'COL', flag: '🇨🇴', count: 20, region: 'americas' },
-            ecuador: { name: 'Ecuador', code: 'ECU', flag: '🇪🇨', count: 20, region: 'americas' },
-            peru: { name: 'Perú', code: 'PER', flag: '🇵🇪', count: 20, region: 'americas' },
-            mexico: { name: 'México', code: 'MEX', flag: '🇲🇽', count: 20, region: 'americas' },
-            usa: { name: 'Estados Unidos', code: 'USA', flag: '🇺🇸', count: 20, region: 'americas' },
-            canada: { name: 'Canadá', code: 'CAN', flag: '🇨🇦', count: 20, region: 'americas' },
-            costarica: { name: 'Costa Rica', code: 'CRC', flag: '🇨🇷', count: 20, region: 'americas' },
-            panama: { name: 'Panamá', code: 'PAN', flag: '🇵🇦', count: 20, region: 'americas' },
-            jamaica: { name: 'Jamaica', code: 'JAM', flag: '🇯🇲', count: 20, region: 'americas' },
-            venezuela: { name: 'Venezuela', code: 'VEN', flag: '🇻🇪', count: 20, region: 'americas' },
-            francia: { name: 'Francia', code: 'FRA', flag: '🇫🇷', count: 20, region: 'europe' },
-            inglaterra: { name: 'Inglaterra', code: 'ENG', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', count: 20, region: 'europe' },
-            espana: { name: 'España', code: 'ESP', flag: '🇪🇸', count: 20, region: 'europe' },
-            alemania: { name: 'Alemania', code: 'GER', flag: '🇩🇪', count: 20, region: 'europe' },
-            portugal: { name: 'Portugal', code: 'POR', flag: '🇵🇹', count: 20, region: 'europe' },
-            paisesbajos: { name: 'Países Bajos', code: 'NED', flag: '🇳🇱', count: 20, region: 'europe' },
-            belgica: { name: 'Bélgica', code: 'BEL', flag: '🇧🇪', count: 20, region: 'europe' },
-            croacia: { name: 'Croacia', code: 'CRO', flag: '🇭🇷', count: 20, region: 'europe' },
-            suiza: { name: 'Suiza', code: 'SUI', flag: '🇨🇭', count: 20, region: 'europe' },
-            dinamarca: { name: 'Dinamarca', code: 'DEN', flag: '🇩🇰', count: 20, region: 'europe' },
-            сербия: { name: 'Serbia', code: 'SRB', code2: 'SRB', flag: '🇷🇸', count: 20, region: 'europe' },
-            polonia: { name: 'Polonia', code: 'POL', flag: '🇵🇱', count: 20, region: 'europe' },
-            escocia: { name: 'Escocia', code: 'SCO', flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', count: 20, region: 'europe' },
-            austria: { name: 'Austria', code: 'AUT', flag: '🇦🇹', count: 20, region: 'europe' },
-            hungria: { name: 'Hungría', code: 'HUN', flag: '🇭🇺', count: 20, region: 'europe' },
-            gales: { name: 'Gales', code: 'WAL', flag: '🏴󠁧󠁢󠁷󠁬󠁳󠁿', count: 20, region: 'europe' },
-            ukrainia: { name: 'Ucran', code: 'UKR', code2: 'UKR', flag: '🇺🇦', count: 20, region: 'europe' },
-            turquia: { name: 'Turquía', code: 'TUR', flag: '🇹🇷', count: 20, region: 'europe' },
-            japon: { name: 'Japón', code: 'JPN', flag: '🇯🇵', count: 20, region: 'asia' },
-            coreadelsur: { name: 'Corea del Sur', code: 'KOR', flag: '🇰🇷', count: 20, region: 'asia' },
-            iran: { name: 'Irán', code: 'IRN', flag: '🇮🇷', count: 20, region: 'asia' },
-            arabiasaudi: { name: 'Arabia Saudita', code: 'KSA', flag: '🇸🇦', count: 20, region: 'asia' },
-            australia: { name: 'Australia', code: 'AUS', flag: '🇦🇺', count: 20, region: 'asia' },
-            qatar: { name: 'Qatar', code: 'QAT', flag: '🇶🇦', count: 20, region: 'asia' },
-            filipinas: { name: 'Filipinas', code: 'PHI', flag: '🇵🇭', count: 20, region: 'asia' },
-            nuevazelanda: { name: 'Nueva Zelanda', code: 'NZL', flag: '🇳🇿', count: 20, region: 'asia' },
-            marruecos: { name: 'Marruecos', code: 'MAR', flag: '🇲🇦', count: 20, region: 'africa' },
-            senegal: { name: 'Senegal', code: 'SEN', flag: '🇸🇳', count: 20, region: 'africa' },
-            argelia: { name: 'Argelia', code: 'ALG', flag: '🇩🇿', count: 20, region: 'africa' },
-            tunes: { name: 'Túnez', code: 'TUN', flag: '🇹🇳', count: 20, region: 'africa' },
-            egipto: { name: 'Egipto', code: 'EGY', flag: '🇪🇬', count: 20, region: 'africa' },
-            nigeria: { name: 'Nigeria', code: 'NGA', flag: '🇳🇬', count: 20, region: 'africa' },
-            camerun: { name: 'Camerún', code: 'CMR', flag: '����🇲', count: 20, region: 'africa' },
-            costamarfil: { name: 'Costa de Marfil', code: 'CIV', flag: '🇨🇮', count: 20, region: 'africa' },
-            mali: { name: 'Mali', code: 'MLI', flag: '🇲🇱', count: 20, region: 'africa' },
-            sudafrica: { name: 'Sudáfrica', code: 'RSA', flag: '🇿🇦', count: 20, region: 'africa' }
-        };
-
-        const SUPABASE_URL = 'https://dxvvusrhmaiysuooxijm.supabase.co';
-        const SUPABASE_KEY = 'YOUR_ANON_KEY';
+<script>
+        const SUPABASE_URL = '{{SUPABASE_URL}}';
+        const SUPABASE_KEY = '{{SUPABASE_KEY}}';
 
         let currentView = 'home';
         let currentTab = 'all';
