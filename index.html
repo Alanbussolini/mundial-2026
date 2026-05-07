@@ -303,6 +303,7 @@
             try {
                 const response = await fetch(`${config.url}/rest/v1/figuritas?select=*`, {
                     credentials: 'omit',
+                    mode: 'cors',
                     headers: {
                         'apikey': config.key,
                         'Authorization': `Bearer ${config.key}`,
@@ -327,6 +328,7 @@
                 const response = await fetch(`${config.url}/rest/v1/figuritas`, {
                     method: 'POST',
                     credentials: 'omit',
+                    mode: 'cors',
                     headers: {
                         'apikey': config.key,
                         'Authorization': `Bearer ${config.key}`,
@@ -352,6 +354,7 @@
                 await fetch(`${config.url}/rest/v1/figuritas?user_name=eq.${encodeURIComponent(userName)}`, {
                     method: 'DELETE',
                     credentials: 'omit',
+                    mode: 'cors',
                     headers: {
                         'apikey': config.key,
                         'Authorization': `Bearer ${config.key}`
